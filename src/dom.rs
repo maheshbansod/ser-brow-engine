@@ -15,6 +15,7 @@ pub struct Node {
 pub enum NodeType {
     Text(String),
     Element(ElementData),
+    Comment(String),
 }
 
 #[derive(Debug)]
@@ -35,6 +36,10 @@ pub fn elem(name: String, attrs: AttrMap, children: Vec<Node>) -> Node {
             attributes: attrs,
         })
     }
+}
+
+pub fn comment(comment: String) -> Node {
+    Node {children: vec![], node_type: NodeType::Comment(comment)}
 }
 
 impl fmt::Display for Node {
@@ -60,6 +65,9 @@ impl fmt::Display for Node {
             },
             NodeType::Text(data) => {
                 write!(f,"{}", data)
+            },
+            NodeType::Comment(comment) => {
+                write!(f, "<!--{}-->", comment)
             }
         }
     }
