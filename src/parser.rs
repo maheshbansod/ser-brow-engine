@@ -48,6 +48,15 @@ impl Parser {
             result
     }
 
+    fn consume_till_str(&mut self, string: &str) -> String {
+        let mut result = String::new();
+        while !self.eof() && !self.starts_with(string) {
+            result.push(self.consume_char());
+        }
+
+        result
+    }
+
     fn consume_whitespace(&mut self) {
         self.consume_while(char::is_whitespace);
     }
@@ -63,7 +72,7 @@ impl Parser {
         match self.next_char() {
             '<' => {
                 self.consume_char();
-                if self.next_char() == '!' {
+                if self.starts_with("!--") {
                     self.parse_comment()
                 } else {
                     self.parse_element()
@@ -98,7 +107,7 @@ impl Parser {
         assert_eq!(self.consume_char(), '-');
         assert_eq!(self.consume_char(), '-');
 
-        let comment = dom::comment(self.consume_while(|c| c != '-'));
+        let comment = dom::comment(self.consume_till_str("-->"));
         assert_eq!(self.consume_char(), '-');
         assert_eq!(self.consume_char(), '-');
         assert_eq!(self.consume_char(), '>');
