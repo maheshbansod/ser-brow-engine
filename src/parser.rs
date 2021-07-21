@@ -52,7 +52,7 @@ impl Parser {
         self.consume_while(char::is_whitespace);
     }
 
-    fn parse_tag_name(&mut self) -> String {
+    fn parse_name(&mut self) -> String {
         self.consume_while(|c| match c {
             'a'..='z' | 'A' ..= 'Z' | '0' ..= '9' => true,
             _ => false
@@ -61,7 +61,14 @@ impl Parser {
 
     fn parse_node(&mut self) -> dom::Node {
         match self.next_char() {
-            '<' => self.parse_element(),
+            '<' => {
+                self.consume_char();
+                if self.next_char() == '!' {
+                    self.parse_comment()
+                } else {
+                    self.parse_element()
+                }
+            },
             _ => self.parse_text(),
         }
     }
@@ -71,8 +78,8 @@ impl Parser {
     }
 
     fn parse_element(&mut self) -> dom::Node {
-        assert_eq!('<',self.consume_char());
-        let tag_name = self.parse_tag_name();
+        // assert_eq!('<',self.consume_char());
+        let tag_name = self.parse_name();
         let attrs = self.parse_attributes();
         assert_eq!('>', self.consume_char());
 
@@ -80,14 +87,27 @@ impl Parser {
 
         assert_eq!(self.consume_char(),'<');
         assert_eq!(self.consume_char(), '/');
-        assert_eq!(self.parse_tag_name(), tag_name);
+        assert_eq!(self.parse_name(), tag_name);
         assert_eq!(self.consume_char(), '>');
 
         dom::elem(tag_name, attrs, children)
     }
 
+    fn parse_comment(&mut self) -> dom::Node {
+        assert_eq!(self.consume_char(), '!');
+        assert_eq!(self.consume_char(), '-');
+        assert_eq!(self.consume_char(), '-');
+
+        let comment = dom::comment(self.consume_while(|c| c != '-'));
+        assert_eq!(self.consume_char(), '-');
+        assert_eq!(self.consume_char(), '-');
+        assert_eq!(self.consume_char(), '>');
+
+        comment
+    }
+
     fn parse_attr(&mut self) -> (String, String) {
-        let name = self.parse_tag_name();
+        let name = self.parse_name();
         assert_eq!(self.consume_char(), '=');
         let value = self.parse_attr_value();
         (name, value)
