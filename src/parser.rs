@@ -38,6 +38,21 @@ impl Parser {
         cur_char
     }
 
+    fn consume_string(&mut self, string: &str) -> Result<(),()> {
+        if !self.starts_with(string) {
+            return Err(());
+        }
+
+        let mut len = string.chars().count();
+
+        while len > 0 {
+            self.consume_char();
+            len -= 1;
+        }
+
+        Ok(())
+    }
+
     fn consume_while<F>(&mut self, test: F) -> String
         where F: Fn(char) -> bool {
             let mut result = String::new();
@@ -60,6 +75,12 @@ impl Parser {
     fn consume_whitespace(&mut self) {
         self.consume_while(char::is_whitespace);
     }
+
+    // fn consume_str_if_starts_with(&mut self, string: &str) {
+    //     if self.starts_with(string) {
+    //         self.consume_string(string).unwrap();
+    //     }
+    // }
 
     fn parse_name(&mut self) -> String {
         self.consume_while(|c| match c {
@@ -103,14 +124,17 @@ impl Parser {
     }
 
     fn parse_comment(&mut self) -> dom::Node {
-        assert_eq!(self.consume_char(), '!');
-        assert_eq!(self.consume_char(), '-');
-        assert_eq!(self.consume_char(), '-');
+        // assert_eq!(self.consume_char(), '!');
+        // assert_eq!(self.consume_char(), '-');
+        // assert_eq!(self.consume_char(), '-');
+        self.consume_string("!--").expect("Some weird error occurred");
 
         let comment = dom::comment(self.consume_till_str("-->"));
-        assert_eq!(self.consume_char(), '-');
-        assert_eq!(self.consume_char(), '-');
-        assert_eq!(self.consume_char(), '>');
+        // assert_eq!(self.consume_char(), '-');
+        // assert_eq!(self.consume_char(), '-');
+        // assert_eq!(self.consume_char(), '>');
+
+        let _ = self.consume_string("-->"); //consumes string if it exists
 
         comment
     }
