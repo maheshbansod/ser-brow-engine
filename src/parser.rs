@@ -141,9 +141,14 @@ impl Parser {
 
     fn parse_attr(&mut self) -> (String, String) {
         let name = self.parse_name();
-        assert_eq!(self.consume_char(), '=');
-        let value = self.parse_attr_value();
-        (name, value)
+        self.consume_whitespace();
+        if self.next_char() == '=' {
+            self.consume_char();
+            let value = self.parse_attr_value();
+            return (name, value);
+        }
+
+        (name, "true".to_string())
     }
 
     fn parse_attr_value(&mut self) -> String {
