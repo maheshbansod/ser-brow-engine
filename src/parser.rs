@@ -111,14 +111,23 @@ impl Parser {
         // assert_eq!('<',self.consume_char());
         let tag_name = self.parse_name();
         let attrs = self.parse_attributes();
-        assert_eq!('>', self.consume_char());
+        // assert_eq!('>', self.consume_char());
+        if let Ok(_) = self.consume_string("/>") {
+            return dom::elem(tag_name, attrs, vec![]);
+        }
+
+        self.consume_char(); //consuming >
 
         let children = self.parse_nodes();
 
-        assert_eq!(self.consume_char(),'<');
-        assert_eq!(self.consume_char(), '/');
-        assert_eq!(self.parse_name(), tag_name);
-        assert_eq!(self.consume_char(), '>');
+        // assert_eq!(self.consume_char(),'<');
+        // assert_eq!(self.consume_char(), '/');
+        // if self.starts_with("</"){
+        //     assert_eq!(self.parse_name(), tag_name);
+        //     assert_eq!(self.consume_char(), '>');
+        // }
+        let closing_tag = format!("</{}>", tag_name);
+        let _ = self.consume_string(&closing_tag);
 
         dom::elem(tag_name, attrs, children)
     }
@@ -170,7 +179,7 @@ impl Parser {
 
         loop {
             self.consume_whitespace();
-            if self.next_char() == '>' {
+            if self.next_char() == '>' || self.starts_with("/>") {
                 break;
             }
             let (name, value) = self.parse_attr();
