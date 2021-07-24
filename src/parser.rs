@@ -152,10 +152,18 @@ impl Parser {
     }
 
     fn parse_attr_value(&mut self) -> String {
-        let open_quote = self.consume_char();
-        assert_eq!(open_quote == '\''|| open_quote == '"', true);
-        let value = self.consume_while(|c| c != open_quote);
-        assert_eq!(open_quote, self.consume_char());
+        let open_quote = self.next_char();
+        let hasquote = open_quote == '\''|| open_quote == '"';
+        if hasquote {
+            self.consume_char();
+        }
+        println!("taking data for attr");
+        let value = self.consume_while(|c| (hasquote && c != open_quote)||(!hasquote && !c.is_whitespace()&&c!='>'));
+        println!("done taking data {}", value);
+        // assert_eq!(open_quote, self.consume_char());
+        if hasquote && self.next_char() == open_quote {
+            self.consume_char();
+        }
         value
     }
 
