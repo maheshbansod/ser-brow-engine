@@ -157,9 +157,7 @@ impl Parser {
         if hasquote {
             self.consume_char();
         }
-        println!("taking data for attr");
         let value = self.consume_while(|c| (hasquote && c != open_quote)||(!hasquote && !c.is_whitespace()&&c!='>'));
-        println!("done taking data {}", value);
         // assert_eq!(open_quote, self.consume_char());
         if hasquote && self.next_char() == open_quote {
             self.consume_char();
