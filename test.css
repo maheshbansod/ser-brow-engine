@@ -1,0 +1,15 @@
+body {
+    background-color: blue;
+    height: 600px;
+}
+.l-side-bar, .r-side-bar {
+    display: none;
+    padding-top: 30px;
+    background-color: rgba(10,10,10,10);
+    color: rgb(254,254,254);
+}
+
+.canvases#mycanvas {
+    width: 40px;;
+    height: 10px;
+}

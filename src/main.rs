@@ -4,7 +4,9 @@
 use std::fs;
 
 mod dom;
-mod parser;
+mod html_parser;
+mod css;
+mod css_parser;
 
 fn main() {
     // let mut attrs: HashMap<String, String> = HashMap::new();
@@ -24,5 +26,7 @@ fn main() {
     
     // println!("{}", tree1);
 
-    println!("{}",parser::parse(fs::read_to_string("test.html").unwrap()));
+    // println!("{}",parser::parse(fs::read_to_string("test.html").unwrap()));
+
+    println!("{}",css_parser::parse(fs::read_to_string("test.css").unwrap()));
 }
