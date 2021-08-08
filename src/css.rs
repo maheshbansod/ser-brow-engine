@@ -72,16 +72,20 @@ pub struct Declaration {
     pub value: Value,
 }
 
+#[derive(Clone)]
 pub enum Value {
     Keyword(String),
     Length(f32, Unit),
     ColorValue(Color),
 }
 
+#[derive(Clone)]
 pub enum Unit {
     Px,
     None,
 }
+
+#[derive(Clone)]
 pub struct Color {
     pub r: u8,
     pub b: u8,

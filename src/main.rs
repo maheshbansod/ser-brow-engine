@@ -7,6 +7,7 @@ mod dom;
 mod html_parser;
 mod css;
 mod css_parser;
+mod style;
 
 fn main() {
     // let mut attrs: HashMap<String, String> = HashMap::new();
@@ -26,7 +27,9 @@ fn main() {
     
     // println!("{}", tree1);
 
-    // println!("{}",parser::parse(fs::read_to_string("test.html").unwrap()));
+    let html_tree = html_parser::parse(fs::read_to_string("test.html").unwrap());
+    println!("HTML PARSER:\n{}",html_tree);
 
-    println!("{}",css_parser::parse(fs::read_to_string("test.css").unwrap()));
+    let css_tree = css_parser::parse(fs::read_to_string("test.css").unwrap());
+    println!("CSS PARSER:\n{}",css_tree);
 }

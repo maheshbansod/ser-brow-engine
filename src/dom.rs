@@ -1,5 +1,6 @@
 
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fmt;
 
 pub type AttrMap = HashMap<String, String>;
@@ -22,6 +23,20 @@ pub enum NodeType {
 pub struct ElementData {
     pub tag_name: String,
     pub attributes: AttrMap,
+}
+
+impl ElementData {
+    pub fn id(&self) -> Option<&String> {
+        self.attributes.get("id")
+    }
+
+    pub fn classes(&self) -> HashSet<&str> {
+        if let Some(classes) = self.attributes.get("class") {
+            classes.split(' ').collect()
+        } else {
+            HashSet::new()
+        }
+    }
 }
 
 pub fn text(data: String) -> Node {
