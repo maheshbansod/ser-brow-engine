@@ -166,8 +166,10 @@ impl Parser {
     }
 
     fn parse_rule(&mut self) -> css::Rule {
+        let mut selectors = self.parse_selectors();
+        selectors.sort_by(|sel1, sel2| sel1.specificity().cmp( &sel2.specificity()));
         css::Rule {
-            selectors: self.parse_selectors(),
+            selectors: selectors,
             declarations: self.parse_declarations(),
         }
     }
